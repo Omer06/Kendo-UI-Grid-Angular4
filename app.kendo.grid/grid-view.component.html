@@ -1,0 +1,48 @@
+<br/>
+<span style="color:blue">İşlem sonuçları: </span> <small>{{ this.resultHandler.message }}</small>
+<button kendoButton (click)="addNew()" style="width: 100%;" [primary]="true">Yeni Kayıt Oluştur</button>
+<kendo-grid [data]="userList" [height]="600">
+    <kendo-grid-column title="Düzenle" width="100">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <button kendoButton *ngIf = "!isEditMode(dataItem)" class="k-button" (click)="delete(dataItem)">Delete</button>
+            <button kendoButton *ngIf = "!isEditMode(dataItem)"  (click)="toggleEditForm(dataItem)" [primary]="true">Düzenle</button>
+            <button kendoButton *ngIf = "isEditMode(dataItem)"  (click)="cancel(dataItem)" [primary]="true">Cancel</button>
+            <button kendoButton *ngIf = "isEditMode(dataItem)" class="k-button" (click)="saveOrUpdate(dataItem)">Update</button>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column title="Firstname" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <label *ngIf = "!isEditMode(dataItem)">{{dataItem.firstname}}</label>
+            <input [(ngModel)] = "dataItem.firstname" class="k-textbox" *ngIf = "isEditMode(dataItem)" />
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="lastname" title="Lastname" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <label *ngIf = "!isEditMode(dataItem)">{{dataItem.lastname}}</label>
+            <input [(ngModel)] = "dataItem.lastname" class="k-textbox" *ngIf = "isEditMode(dataItem)" />
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column  title="Country" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <label *ngIf = "!isEditMode(dataItem)">{{dataItem.country.countryName}}</label>
+            <kendo-dropdownlist [data]="countryList"
+                *ngIf = "isEditMode(dataItem)"
+                (selectionChange) = "dataItem.city = getCityList($event.countryId)[0]"
+                [textField]="'countryName'"
+                [valueField]="'countryId'"
+                [(ngModel)] = "dataItem.country">
+            </kendo-dropdownlist>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column title="City" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <label *ngIf = "!isEditMode(dataItem)">{{dataItem.city.cityName}}</label>
+             <kendo-dropdownlist [data] = "getCityList(dataItem.country.countryId)"
+                *ngIf = "isEditMode(dataItem)"
+                [(ngModel)] = "dataItem.city"
+                [textField]="'cityName'"
+                [valueField]="'cityId'" >
+                </kendo-dropdownlist> 
+        </ng-template>
+    </kendo-grid-column>
+</kendo-grid>
